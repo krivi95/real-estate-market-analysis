@@ -1,0 +1,3 @@
+# Web scraping
+
+Web scraper for getting information about real estate listings in Serbia and storing that info in PostgreSQL running in docker container...
