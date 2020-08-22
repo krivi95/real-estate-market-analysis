@@ -26,7 +26,6 @@ class ApartmentsSalePostgres:
             # Opening db connection (if run for first time db and tables are created)
             self.connection_utils = Connection(parameters)
             self.conn = self.connection_utils.open_connection()
-            self.conn.set_session(autocommit=True)
             self.curr = self.conn.cursor()
 
     def close_spider(self, spider):
