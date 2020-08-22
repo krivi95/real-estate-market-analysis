@@ -21,13 +21,11 @@ class ApartmentsSale(scrapy.Spider):
         properties = response.xpath('//h3[@class="product-title"]/a/@href')
         for prop in properties:
             sublink = prop.get() 
-            print(sublink)
-            print(response.urljoin(sublink))
+            yield SeleniumRequest(response.urljoin(sublink), callback=self.parse_realestate_page)
 
         # Getting the link to next page (pagination)
         next_page = response.xpath('//a[@class="page-link next"]/@href').get()
-        print(next_page)
-        print(response.urljoin(next_page))
+        yield SeleniumRequest(response.urljoin(next_page), callback=self.parse)
 
     def parse_realestate_page(self, response):
         """Parsing real estate data - property page."""
