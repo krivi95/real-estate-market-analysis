@@ -1,11 +1,8 @@
-# Standard library import
-import json
-
 # Third party import
 import psycopg2
 
-# Local import
-from sql_statements import SqlStatements
+# Local module import
+from .sql_statements import SqlStatements
 
 class Connection:
     """
@@ -37,13 +34,14 @@ class Connection:
         conn = self._connect(host, port, database, user, password)
         if conn is not None:
             self.open_connections.append(conn)
+        print("Database connection established.")
         return conn
 
     def close_connection(self, conn):
         """Closes previously established connection by this class."""
         try:
-            if conn is not None and conn in self.open_connection:
-                self.open_connection.remove(conn)
+            if conn is not None and conn in self.open_connections:
+                self.open_connections.remove(conn)
                 conn.close()
                 print('Database connection closed.')
                 return True
@@ -51,6 +49,7 @@ class Connection:
                 return False
         except Exception as e:
             print(e)
+            print('hehehhe')
             return False
 
     def _connect(self, host, port, database, user, password):
@@ -101,9 +100,3 @@ class Connection:
         except Exception as e:
             print(e)
 
-if __name__ == "__main__":
-    with open('db_connetion.json') as db_file:
-
-        parameters = json.load(db_file)
-        connection_utils = Connection(parameters)
-        connection_utils.open_connection()
