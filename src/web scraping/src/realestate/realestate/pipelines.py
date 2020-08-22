@@ -17,6 +17,9 @@ from .db_connection.sql_statements import SqlStatements
 class ApartmentsSalePostgres:
     """Pipeline for storring scraped content in postgres database."""
 
+    def __init__(self):
+        self.num_of_requests_in_pipeline = 0
+
     def open_spider(self, spider):
         """When spider is opened, opens db connection as well."""
         with open('../../db_connetion.json') as db_file:
@@ -53,7 +56,15 @@ class ApartmentsSalePostgres:
                 item['source'],
             )
         )
-
         self.conn.commit()
-
+        self._log_progress()
         return item
+
+    def _log_progress(self):
+        """Printing progress of scraped data that went through."""
+        self.num_of_requests_in_pipeline += 1
+        if self.num_of_requests_in_pipeline % 20 == 0:
+            print('-' * 200)
+            print(f'DB PIPELINE: {self.num_of_requests_in_pipeline} items wenth though pipeline.')
+            print('-' * 200)
+         

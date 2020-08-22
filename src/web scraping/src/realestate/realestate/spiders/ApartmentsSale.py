@@ -1,10 +1,23 @@
+# Standard library imports
+from enum import Enum
+
 # Importing third party libraries
 import scrapy
 from scrapy_selenium import SeleniumRequest
 
+
+class APARTMENT_FLOOR(Enum):
+    PR = 'PR'
+    VPR = 'VPR'
+    PSUT = 'PSUT'
+    SUT = 'SUT'
+
 class ApartmentsSale(scrapy.Spider):
     """Spider class for scraping data about apartments for sale."""
     name = "apartments-sale"
+
+    def __init__(self):
+        self.num_parsed_realestate_pages = 0
 
     def start_requests(self):
         urls = [
@@ -13,10 +26,8 @@ class ApartmentsSale(scrapy.Spider):
         for url in urls:
             yield SeleniumRequest(url=url, callback=self.parse)
 
-
     def parse(self, response):
-        """Parsing the page containing links"""
-        
+        """Parsing the page containing links"""        
         # Getting the properties and opening their link page to parse data on the
         properties = response.xpath('//h3[@class="product-title"]/a/@href')
         for prop in properties:
@@ -30,25 +41,8 @@ class ApartmentsSale(scrapy.Spider):
     def parse_realestate_page(self, response):
         """Parsing real estate data - property page."""
 
-        # Determining GPS coordinates of property
-        embeded_location = response.xpath('//div[@class="widget-operator-panel widget-operator-panel widget-operator-panel"]/script').re(r'44.\d+,20.\d+')
-        if len(embeded_location) > 0:
-            embeded_location = embeded_location[0]
-        else:
-            embeded_location = None
-
-        # Determining apartment floor
-        apartment_floor = response.xpath('//span[@id="plh18"]/text()').get()
-        if apartment_floor:
-            try:
-                apartment_floor = int(apartment_floor)
-            except ValueError as e:
-                if apartment_floor == 'PR':
-                    apartment_floor = 0
-                elif apartment_floor == 'VPR':
-                    apartment_floor = 0.5
-                elif apartment_floor == 'PSUT' or apartment_floor == 'SUT':
-                    apartment_floor = -1
+        embeded_location = self._parse_gps_location(response)
+        apartment_floor = self._parse_apartment_floor(response)
 
         yield {
             'listing_type': 'a',
@@ -66,3 +60,39 @@ class ApartmentsSale(scrapy.Spider):
             'num_rooms': response.xpath('//span[@id="plh13"]/text()').get(),
             'source': response.request.url
             }
+        
+        self._log_progress()
+
+    def _parse_apartment_floor(self, response):
+        """Determining apartment floor."""
+        apartment_floor = response.xpath('//span[@id="plh18"]/text()').get()
+        if apartment_floor:
+            try:
+                apartment_floor = int(apartment_floor)
+            except ValueError as e:
+                if apartment_floor == APARTMENT_FLOOR.PR.value:
+                    apartment_floor = 0
+                elif apartment_floor == APARTMENT_FLOOR.VPR.value:
+                    apartment_floor = 0.5
+                elif apartment_floor == APARTMENT_FLOOR.PSUT.value or apartment_floor == APARTMENT_FLOOR.SUT.value:
+                    apartment_floor = -1
+                else apartment_floor = 0
+        return apartment_floor
+
+    def _parse_gps_location(self, response):
+        """Determining GPS coordinates of property."""
+        embeded_location = response.xpath('//div[@class="widget-operator-panel widget-operator-panel widget-operator-panel"]/script').re(r'44.\d+,20.\d+')
+        if len(embeded_location) > 0:
+            embeded_location = embeded_location[0]
+        else:
+            embeded_location = None
+        return embeded_location
+    
+    def _log_progress(self):
+        """Printing progress of scraped data."""
+        self.num_parsed_realestate_pages += 1
+        if self.num_parsed_realestate_pages % 20 == 0:
+            print('-' * 200)
+            print(f'PARSED {self.num_parsed_realestate_pages} URLS OF REAL ESTATE DATA.')
+            print('-' * 200)
+         
