@@ -34,7 +34,7 @@ class SqlStatements:
                 area_land real,
                 construction_type text,
                 num_floors_building integer,
-                apartment_floor integer,
+                apartment_floor real,
                 registered boolean,
                 heating_type text,
                 num_rooms real,

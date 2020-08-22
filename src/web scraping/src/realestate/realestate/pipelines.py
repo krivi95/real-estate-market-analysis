@@ -55,4 +55,6 @@ class ApartmentsSalePostgres:
             )
         )
 
+        self.conn.commit()
+
         return item
