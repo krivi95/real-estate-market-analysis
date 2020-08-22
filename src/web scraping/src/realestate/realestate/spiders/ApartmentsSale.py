@@ -76,7 +76,8 @@ class ApartmentsSale(scrapy.Spider):
                     apartment_floor = 0.5
                 elif apartment_floor == APARTMENT_FLOOR.PSUT.value or apartment_floor == APARTMENT_FLOOR.SUT.value:
                     apartment_floor = -1
-                else apartment_floor = 0
+                else: 
+                    apartment_floor = 0
         return apartment_floor
 
     def _parse_gps_location(self, response):
