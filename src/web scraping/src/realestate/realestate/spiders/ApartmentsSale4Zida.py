@@ -72,10 +72,13 @@ class ApartmentsSale4Zida(scrapy.Spider):
         """Printing progress of scraped data."""
         self.num_parsed_realestate_pages += 1
         if self.num_parsed_realestate_pages % 20 == 0:
+            # Informing on progress after every 20 scraped and processed web pages
             print('-' * 200)
             print(f'PARSED {self.num_parsed_realestate_pages} URLS OF REAL ESTATE DATA.')
-            print('-' * 200)            
-            raise scrapy.exceptions.CloseSpider(reason='TEST IS OVER')
+            print('-' * 200)
+        if self.num_parsed_realestate_pages > 20000:
+            # Stopping scraper after 20,000 processed web pages
+            raise scrapy.exceptions.CloseSpider(reason='SCRAPED OVER 20,000 WEB PAGES, STOPPING SPIDER...')
 
     def _get_price(self, response):
         price = response.xpath('//span[@class="pr-2"]/text()').get()
