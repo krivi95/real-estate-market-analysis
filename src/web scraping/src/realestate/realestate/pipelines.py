@@ -11,6 +11,9 @@ import json
 from .db_connection.connection import Connection
 from .db_connection.sql_statements import SqlStatements
 
+# Thirt party imports
+from scrapy.exceptions import DropItem
+
 class ApartmentsSalePostgres:
     """Pipeline for storring scraped content in postgres database."""
 
@@ -35,6 +38,8 @@ class ApartmentsSalePostgres:
 
     def process_item(self, item, spider):
         """Storring scrapped item, info for apartment on sale, to database."""
+        if item is None:
+            raise DropItem("Something went wrong in parsing data...")
         self.curr.execute(
             SqlStatements.insert_new_real_estate(),
             (
