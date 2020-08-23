@@ -81,7 +81,6 @@ class HousesSale4Zida(scrapy.Spider):
             print('-' * 200)
             print(f'PARSED {self.num_parsed_realestate_pages} URLS OF REAL ESTATE DATA.')
             print('-' * 200)
-            raise scrapy.exceptions.CloseSpider(reason='TEST IS OVER')
         if self.num_parsed_realestate_pages > 20000:
             # Stopping scraper after 20,000 processed web pages
             raise scrapy.exceptions.CloseSpider(reason='SCRAPED OVER 20,000 WEB PAGES, STOPPING SPIDER...')
