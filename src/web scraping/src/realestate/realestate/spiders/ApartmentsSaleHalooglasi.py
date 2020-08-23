@@ -95,5 +95,6 @@ class ApartmentsSale(scrapy.Spider):
         if self.num_parsed_realestate_pages % 20 == 0:
             print('-' * 200)
             print(f'PARSED {self.num_parsed_realestate_pages} URLS OF REAL ESTATE DATA.')
-            print('-' * 200)
+            print('-' * 200)            
+            raise scrapy.exceptions.CloseSpider(reason='GOTOVOOOO')
          
