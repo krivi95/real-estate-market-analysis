@@ -60,7 +60,8 @@ class SqlStatements:
 					   num_rooms,
                        num_bathrooms,
 					   source)
-		 	values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+		 	values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT DO NOTHING;
         """
     
     @staticmethod
