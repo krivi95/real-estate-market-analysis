@@ -7,24 +7,32 @@ import scrapy
 class ApartmentsSale4Zida(scrapy.Spider):
     name = "4zida-apartments-sale"
 
+    def __init__(self):
+        self.current_link = 'https://4zida.rs/prodaja-stanova?search_source=home&strana=1'
+        self.page_num = 1
+        self.num_parsed_realestate_pages = 0
+
     def start_requests(self):
-        urls = [
-            'https://4zida.rs/prodaja/stanovi/beograd/oglas/nodilova/5f2b0c3b0c7cde7aff2e19b4',
-            'https://4zida.rs/prodaja/stanovi/beograd/oglas/bulevar-mihajla-pupina/5ed7e1c627317159674a7c93',
-            'https://4zida.rs/prodaja/stanovi/novi-sad/oglas/novo-naselje/5e43eaa82731713f411b772d',
-            'https://4zida.rs/prodaja/stanovi/novi-sad/oglas/sajmiste/5ed20e422731712afa741d53',
-            'https://4zida.rs/prodaja/stanovi/beograd/oglas/bulevar-zorana-djindjica/5de67473273171036f55f433',
-            'https://4zida.rs/prodaja/stanovi/novi-sad/oglas/centar-novi-sad/5f24ad520fa51a28d65e95ad',
-            'https://4zida.rs/prodaja/stanovi/novi-sad/oglas/telep/5f1060d9c7765813446efbb5',
-            'https://4zida.rs/prodaja/stanovi/subotica-opstina/oglas/centar-2/5ee379ce2731712e8c79d613',
-            'https://4zida.rs/prodaja/stanovi/beograd/oglas/mihajla-pupina/5f3d5955c1ef9f42e90907ce',
-            'https://4zida.rs/prodaja/stanovi/beograd/oglas/miloja-djaka/5f2d6c3a67b12c082f048137',
-            'https://4zida.rs/prodaja/stanovi/beograd/oglas/miloja-djaka/5d51bd492731712f3e7dfa87'
-        ]
+        urls = ['https://4zida.rs/prodaja-stanova?search_source=home&strana=1']
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
+        # Getting the properties and opening their link page to parse data on the
+        properties = self._get_all_real_estate_links(response)
+        for prop_url_request in properties:
+            sublink = prop_url_request.get() 
+            # print(sublink)
+            yield scrapy.Request(response.urljoin(sublink), callback=self._parse_real_estate_page)
+
+        # Getting the link to next page (pagination)
+        link_to_next_page = self._get_link_to_next_page(response)
+        if link_to_next_page:
+            # print(link_to_next_page)
+            yield scrapy.Request(link_to_next_page, callback=self.parse)
+        
+
+    def _parse_real_estate_page(self, response):
         property_data = RealEstateUtils.get_property_dictionary()
         try:
             property_data['listing_type'] = 's'
@@ -40,10 +48,34 @@ class ApartmentsSale4Zida(scrapy.Spider):
             property_data['heating_type'] = self._get_heating_type(response)     
             property_data['num_rooms'] = self._get_num_of_rooms(response)     
             property_data['num_bathrooms'] = self._get_num_of_bathrooms(response)     
+            property_data['source'] = response.request.url
         except Exception as e:
             yield None
 
         yield property_data
+        self._log_progress()
+
+
+    def _get_all_real_estate_links(self, response):
+        return response.xpath('//div[@class="col-lg-8 card-classified-info"]/*/a[1]/@href')
+
+    def _get_link_to_next_page(self, response):
+        website_api = self.current_link.split('=')
+        page_number = website_api[-1]
+        website_api.remove(page_number)
+        page_number = int(page_number)
+        page_number += 1
+        website_api.append(str(page_number))
+        return '='.join(website_api)
+
+    def _log_progress(self):
+        """Printing progress of scraped data."""
+        self.num_parsed_realestate_pages += 1
+        if self.num_parsed_realestate_pages % 20 == 0:
+            print('-' * 200)
+            print(f'PARSED {self.num_parsed_realestate_pages} URLS OF REAL ESTATE DATA.')
+            print('-' * 200)            
+            raise scrapy.exceptions.CloseSpider(reason='TEST IS OVER')
 
     def _get_price(self, response):
         price = response.xpath('//span[@class="pr-2"]/text()').get()
