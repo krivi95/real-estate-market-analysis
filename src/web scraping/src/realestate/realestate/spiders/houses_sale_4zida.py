@@ -8,39 +8,32 @@ class HousesSale4Zida(scrapy.Spider):
     name = "4zida-houses-sale"
 
     def __init__(self):
-        self.current_link = 'https://4zida.rs/prodaja-stanova?search_source=home&strana=1'
+        self.current_link = 'https://www.4zida.rs/prodaja-kuca?search_source=home&strana=1'
         self.page_num = 1
         self.num_parsed_realestate_pages = 0
 
     def start_requests(self):
-        urls = [
-            'https://www.4zida.rs/prodaja/kuce/paracin-opstina/oglas/glavica/5e21e681273171283c0380b6',
-            'https://www.4zida.rs/prodaja/kuce/cuprija-opstina/oglas/mijatovac/5e212fd427317159e165e947',
-            'https://www.4zida.rs/prodaja/kuce/novi-sad/oglas/sremska-kamenica/5e53a7e027317145ee4c8ae3',
-            'https://www.4zida.rs/prodaja/kuce/beograd/oglas/banjicka/5ed7effc27317169a23d31a3',
-            'https://www.4zida.rs/prodaja/kuce/irig-opstina/oglas/stara-kolonija/5f36a9df0c7cde02c16213dd',
-            'https://www.4zida.rs/prodaja/kuce/beograd/oglas/dusanovac/5eda22679a30911882747140',
-            'https://www.4zida.rs/prodaja/kuce/novi-sad/oglas/telep/5e2218bb2731715c883b9d13',
-            'https://www.4zida.rs/prodaja/kuce/novi-sad/oglas/adamovicevo-naselje/5f367d3dd0f0266eae4335ac'
-            ]
+        urls = ['https://www.4zida.rs/prodaja-kuca?search_source=home&strana=1']
         for url in urls:
-            yield scrapy.Request(url=url, callback=self._parse_real_estate_page)
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        """
-        # Getting the properties and opening their link page to parse data on the
+        # Getting the properties (houses) and opening their link page to parse data
         properties = self._get_all_real_estate_links(response)
         for prop_url_request in properties:
             sublink = prop_url_request.get() 
-            # print(sublink)
+            yield scrapy.Request(response.urljoin(sublink), callback=self._parse_real_estate_page)
+
+        # Getting the premium properties (houses) and opening their link page to parse data
+        premium_properties = self._get_premium_real_estate_links(response)
+        for prop_url_request in premium_properties:
+            sublink = prop_url_request.get() 
             yield scrapy.Request(response.urljoin(sublink), callback=self._parse_real_estate_page)
 
         # Getting the link to next page (pagination)
         link_to_next_page = self._get_link_to_next_page(response)
         if link_to_next_page:
-            # print(link_to_next_page)
             yield scrapy.Request(link_to_next_page, callback=self.parse)
-        """
 
     def _parse_real_estate_page(self, response):
         property_data = RealEstateUtils.get_property_dictionary()
@@ -60,12 +53,12 @@ class HousesSale4Zida(scrapy.Spider):
             property_data['source'] = response.request.url
         except Exception as e:
             yield None
-            pass
 
-        print(property_data)
         yield property_data
         self._log_progress()
 
+    def _get_premium_real_estate_links(self, response):
+        return response.xpath('//a[@id="PremiumSeachPage"]/@href')
 
     def _get_all_real_estate_links(self, response):
         return response.xpath('//div[@class="col-lg-8 card-classified-info"]/*/a[1]/@href')
@@ -88,6 +81,7 @@ class HousesSale4Zida(scrapy.Spider):
             print('-' * 200)
             print(f'PARSED {self.num_parsed_realestate_pages} URLS OF REAL ESTATE DATA.')
             print('-' * 200)
+            raise scrapy.exceptions.CloseSpider(reason='TEST IS OVER')
         if self.num_parsed_realestate_pages > 20000:
             # Stopping scraper after 20,000 processed web pages
             raise scrapy.exceptions.CloseSpider(reason='SCRAPED OVER 20,000 WEB PAGES, STOPPING SPIDER...')

@@ -55,7 +55,6 @@ class ApartmentsSale4Zida(scrapy.Spider):
         yield property_data
         self._log_progress()
 
-
     def _get_all_real_estate_links(self, response):
         return response.xpath('//div[@class="col-lg-8 card-classified-info"]/*/a[1]/@href')
 
