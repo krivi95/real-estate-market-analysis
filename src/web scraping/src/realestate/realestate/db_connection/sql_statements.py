@@ -28,8 +28,6 @@ class SqlStatements:
                 price real,
                 location_city text,
                 location_city_district text,
-                location_lat real,
-                location_long real,
                 area_property real,
                 area_land real,
                 construction_type text,
@@ -42,6 +40,28 @@ class SqlStatements:
                 source text         
             );
             """
+
+    @staticmethod
+    def insert_new_real_estate():
+        return """
+            INSERT INTO properties(
+                       listing_type,
+                       property_type, 
+					   price, 
+					   location_city, 
+					   location_city_district, 
+					   area_property,
+                       area_land,
+					   construction_type,
+					   num_floors_building,
+					   apartment_floor,
+					   registered,
+					   heating_type,
+					   num_rooms,
+                       num_bathrooms,
+					   source)
+		 	values(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
     
     @staticmethod
     def insert_apartment():

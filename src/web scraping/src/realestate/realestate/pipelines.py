@@ -1,12 +1,9 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+"""
+Define your item pipelines here
 
-
-# useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
-
+Don't forget to add your pipeline to the ITEM_PIPELINES setting
+See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+"""
 # Standard library imports
 import json
 
@@ -39,21 +36,23 @@ class ApartmentsSalePostgres:
     def process_item(self, item, spider):
         """Storring scrapped item, info for apartment on sale, to database."""
         self.curr.execute(
-            SqlStatements.insert_apartment(),
+            SqlStatements.insert_new_real_estate(),
             (
-                item['price'],
-                item['location_city'],
-                item['location_city_district'],
-                item['location_lat'],
-                item['location_long'],
+                item['listing_type'],
+                item['property_type'], 
+                item['price'], 
+                item['location_city'], 
+                item['location_city_district'], 
                 item['area_property'],
+                item['area_land'],
                 item['construction_type'],
                 item['num_floors_building'],
                 item['apartment_floor'],
                 item['registered'],
                 item['heating_type'],
                 item['num_rooms'],
-                item['source'],
+                item['num_bathrooms'],
+                item['source']
             )
         )
         self.conn.commit()
