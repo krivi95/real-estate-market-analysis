@@ -40,27 +40,32 @@ class ApartmentsSalePostgres:
         """Storring scrapped item, info for apartment on sale, to database."""
         if item is None:
             raise DropItem("Something went wrong in parsing data...")
-        self.curr.execute(
-            SqlStatements.insert_new_real_estate(),
-            (
-                item['listing_type'],
-                item['property_type'], 
-                item['price'], 
-                item['location_city'], 
-                item['location_city_district'], 
-                item['area_property'],
-                item['area_land'],
-                item['construction_type'],
-                item['num_floors_building'],
-                item['apartment_floor'],
-                item['registered'],
-                item['heating_type'],
-                item['num_rooms'],
-                item['num_bathrooms'],
-                item['source']
+        try:
+            self.curr.execute(
+                SqlStatements.insert_new_real_estate(),
+                (
+                    item['listing_type'],
+                    item['property_type'], 
+                    item['price'], 
+                    item['location_city'], 
+                    item['location_city_district'], 
+                    item['area_property'],
+                    item['area_land'],
+                    item['construction_type'],
+                    item['num_floors_building'],
+                    item['apartment_floor'],
+                    item['registered'],
+                    item['heating_type'],
+                    item['num_rooms'],
+                    item['num_bathrooms'],
+                    item['source']
+                )
             )
-        )
-        self.conn.commit()
+            self.conn.commit()
+        except Exception as e:
+            print(e)
+            self.conn.rollback()
+            return item
         self._log_progress()
         return item
 
