@@ -66,7 +66,8 @@ class ApartmentsSale4Zida(scrapy.Spider):
         page_number = int(page_number)
         page_number += 1
         website_api.append(str(page_number))
-        return '='.join(website_api)
+        self.current_link = '='.join(website_api) 
+        return self.current_link 
 
     def _log_progress(self):
         """Printing progress of scraped data."""
