@@ -7,19 +7,10 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-SELENIUM_DRIVER_NAME = 'chrome'
-SELENIUM_DRIVER_EXECUTABLE_PATH = r'..\..\chrome-driver\chromedriver.exe'
-SELENIUM_DRIVER_ARGUMENTS=['-headless']  # '--headless' if using chrome instead of firefox
-
-DOWNLOADER_MIDDLEWARES = {
-    'scrapy_selenium.SeleniumMiddleware': 800
-}
-
 BOT_NAME = 'realestate'
 
 SPIDER_MODULES = ['realestate.spiders']
 NEWSPIDER_MODULE = 'realestate.spiders'
-
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'realestate (+http://www.yourdomain.com)'
@@ -76,11 +67,11 @@ ITEM_PIPELINES = {
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-AUTOTHROTTLE_ENABLED = True
+# AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-AUTOTHROTTLE_START_DELAY = 1
+# AUTOTHROTTLE_START_DELAY = 1
 # The maximum download delay to be set in case of high latencies
-AUTOTHROTTLE_MAX_DELAY = 3
+# AUTOTHROTTLE_MAX_DELAY = 3
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
 #AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
@@ -94,12 +85,3 @@ AUTOTHROTTLE_MAX_DELAY = 3
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-# Proxy mode
-# 0 = Every requests have different proxy
-# 1 = Take only one proxy from the list and assign it to every requests
-# 2 = Put a custom proxy to use in the settings
-PROXY_MODE = 0
-
-# If proxy mode is 2 uncomment this sentence :
-#CUSTOM_PROXY = "http://host1:port"
