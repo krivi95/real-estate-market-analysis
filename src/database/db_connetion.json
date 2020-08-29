@@ -1,0 +1,7 @@
+{
+    "host":"localhost",
+    "port":"4321",
+    "user":"postgres",
+    "password":"intas",
+    "database":"realestate"
+}
