@@ -27,4 +27,4 @@ In `\scr` directory you may find:
 ## How to run the scraper?
 
 #### 1. Running postgres docker container
-On how to set up postgres in docker container please refer to an [instruction](../database/README.md). 
+On how to set up postgres in docker container please refer to an [instruction](../database/). 
