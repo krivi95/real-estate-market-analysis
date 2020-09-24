@@ -1,0 +1,7 @@
+sudo: required
+services:
+  - docker
+
+script:
+  - docker build -t krivi95/psz-real-estate-models -f src/streamlit\ app/Dockerfile
+  - docker images krivi95/psz-real-estate-models
