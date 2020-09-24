@@ -5,3 +5,13 @@ services:
 script:
   - docker build -t krivi95/psz-real-estate-models src/streamlit\ app
   - docker images krivi95/psz-real-estate-models
+
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker login -u $DOCKER_USERNAME  -p $DOCKER_PASSWORD
+
+deploy:
+  provider: script
+  script: docker push krivi95/docker-travis-test
+  on:
+    branch: master
