@@ -2,13 +2,13 @@ from enum import Enum
 
 
 class REGRESSION_SETTINGS(Enum):
-    BACKUP_DIRECTORY = r'models\linear_regression_model'
+    BACKUP_DIRECTORY = r'models/linear_regression_model'
     WEIGHTS = 'weights.txt'
     ENCODER = 'onehotencoder.pickle'
     SCALER = 'standardizer.pickle'
 
 class CLASSIFICATION_SETTINGS(Enum):
-    BACKUP_DIRECTORY = r'models\svm_model'
+    BACKUP_DIRECTORY = r'models/svm_model'
     MODEL = 'svm.pickle'
     ENCODER = 'onehotencoder.pickle'
     SCALER = 'standardizer.pickle'
