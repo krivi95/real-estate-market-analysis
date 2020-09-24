@@ -11,7 +11,7 @@ before_deploy:
 
 deploy:
   provider: script
-  script: docker push krivi95/docker-travis-test
+  script: docker push krivi95/psz-real-estate-models
   on:
     branch: master
 
