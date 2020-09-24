@@ -3,5 +3,5 @@ services:
   - docker
 
 script:
-  - docker build -t krivi95/psz-real-estate-models -f src/streamlit\ app/Dockerfile
+  - docker build -t krivi95/psz-real-estate-models src/streamlit\ app
   - docker images krivi95/psz-real-estate-models
