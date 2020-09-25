@@ -31,5 +31,9 @@ In the root directory you may also find:
 - `requirements.txt` file - Python 3.8 dependencies for running all of the projects. Please refer to the `README.md` documentation uder each project on how to run them.
 - `.travis.yml` file - for `Travis CI` to automatically build and deploy the stramlit web app container directly to the Docker Hub, so users could pull the image and use it. 
 
+# Application demo
+Here is the demo of the final web application using our trained models for making a prediction on a flat price based on a user inputs:
+
+![demo](./demo.gif)
 
 
