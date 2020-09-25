@@ -22,10 +22,10 @@ Described project is implemented in [Python 3.8](https://www.python.org/download
 ## Project structure
 In this repository under the `src` directory you may find separate projects for each of the steps that are previously described. Under those project, in `README.md` file, you may find the documentation, instructions on how to set up and use the code. Those project are:
 - [database](./src/database) - contains the instruction on how to set up and run the perzistent PostgreSQL database container, scripts and backups.
-- [web scraping](./src/web&#32scraping) - contains the scrapy project and instrunctions on how to run the spiders for getting the data about real estate listings from the websites and storring them into the database.
-- [data analysis](./src/data&#32analysis) - contains the Jupyter notebooks for claening the raw dataset, analysing and visualizing data.
+- [web scraping](./src/web%20scraping) - contains the scrapy project and instrunctions on how to run the spiders for getting the data about real estate listings from the websites and storring them into the database.
+- [data analysis](./src/data%20analysis) - contains the Jupyter notebooks for claening the raw dataset, analysing and visualizing data.
 - [modeling](./src/modeling) - contains the implementation of a custom linear regression and SVM classification models, description how models work and Jupyter notebooks for training those models and additional notebooks for training a similar models from sklearn library as a baseline models for an evaluation and a comparison.
-- [streamlit app](./src/streamlit&#32app) - contains the simple containerized web application for demonstrating trained models.
+- [streamlit app](./src/streamlit%20app) - contains the simple containerized web application for demonstrating trained models.
 
 In the root directory you may also find:
 - `requirements.txt` file - Python 3.8 dependencies for running all of the projects. Please refer to the `README.md` documentation uder each project on how to run them.
